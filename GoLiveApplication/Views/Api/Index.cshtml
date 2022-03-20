@@ -1,0 +1,150 @@
+﻿@using GoLiveApplication.Models
+@model List<GoLive>
+
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>GO LIVE</h1>
+
+    <div id="googleMap" style="width:100%;height:400px;"></div>
+
+    <script>
+
+        function myMap() {
+            var mapProp = {
+                center: { lat: 39.775371, lng: 30.515957 },
+                zoom: 10,
+            };
+            var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+            var a = new Array();
+            var b = new Array();
+            var c = new Array();
+            var name = new Array();
+            var mobile = new Array();
+            var department = new Array();
+            var licence = new Array();
+            var a = [];
+            var b = [];
+            var c = [];
+            var name = [];
+            var mobile = [];
+            var department = [];
+            var licence = [];
+             @foreach(var item in Model)
+             {
+                @:c.push(@Html.Raw(Json.Encode(item.type)));
+
+             }
+             @foreach(var item in Model)
+             {
+                @:name.push(@Html.Raw(Json.Encode(item.name)));
+
+             }
+              @foreach(var item in Model)
+             {
+                @:mobile.push(@Html.Raw(Json.Encode(item.mobile)));
+
+             }
+             @foreach(var item in Model)
+             {
+                @:department.push(@Html.Raw(Json.Encode(item.dep)));
+
+             }
+             @foreach(var item in Model)
+             {
+                @:licence.push(@Html.Raw(Json.Encode(item.license_plate)));
+
+             }
+            //markers
+            @foreach(var item in Model)
+            {
+                @:a.push(@item.loc.lat.ToString().Replace(',','.'));
+
+            }
+             @foreach(var item in Model)
+            {
+                @:b.push(@item.loc.lng.ToString().Replace(',', '.'));
+
+            }
+
+            for (var i = 0; i < a.length; i++) {
+
+
+                if (c[i] == "T") {
+                    var data1 = a[i];
+                    var data2 = b[i];
+                    var marker = new google.maps.Marker({
+                        position: { lat: data1, lng: data2 },
+                        map: map,
+                    });
+                    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Konum: '+a[i]+'<br>Tipi: '+c[i],
+                    });
+
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            infowindow.setContent('Type: ' + "Team" + '<br>Adi: ' + name[i] + '<br>Mobile: ' + mobile[i] + '<br>Department: ' + department[i]);
+                            infowindow.open(map, marker);
+                        }
+                    })(marker, i));
+                }
+                else if (c[i] == "V") {
+                    var data1 = a[i];
+                    var data2 = b[i];
+                    var marker = new google.maps.Marker({
+                        position: { lat: data1, lng: data2 },
+                        map: map,
+                    });
+                    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Konum: ' + a[i] + '<br>Tipi: ' + c[i],
+                    });
+
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            infowindow.setContent('Type: ' + "Vehicle" + '<br>Adi: ' + name[i] + '<br>License Plate: ' + licence[i]);
+                            infowindow.open(map, marker);
+                        }
+                    })(marker, i));
+                }
+            }
+        }
+    </script>
+    <script src="http://maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHqf1vW6kOvupcMNx1gKZnPnNzoY1WSHI&callback=myMap"></script>
+    <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>type</th>
+            <th>name</th>
+            <th>mobile</th>
+            <th>pernr</th>
+            <th>dep</th>
+            <th>status</th>
+            <th>lat</th>
+            <th>lng</th>
+            <th>license_plate</th>
+        </tr>
+        @foreach (var g in Model)
+        {
+            <tr>
+                <td>@g.type</td>
+                <td>@g.name</td>
+                <td>@g.mobile</td>
+                <td>@g.pernr</td>
+                <td>@g.dep</td>
+                <td>@g.status</td>
+                <td>@g.loc.lat</td>
+                <td>@g.loc.lng</td>
+                <td>@g.license_plate</td>
+            </tr>
+        }
+    </table>
+</body>
+</html>
